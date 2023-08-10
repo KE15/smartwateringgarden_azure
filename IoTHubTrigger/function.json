@@ -1,0 +1,36 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "event",
+      "direction": "in",
+      "eventHubName": "",
+      "connection": "IOT_HUB_CONNECTION_STRING",
+      "cardinality": "one",
+      "consumerGroup": "$Default"
+    },
+    {
+      "name": "insert",
+      "type": "sql",
+      "direction": "out",
+      "commandText": "dbo.tdata",
+      "connectionStringSetting": "SqlConnectionString"
+    },
+    {
+      "name": "insertLogSiram",
+      "type": "sql",
+      "direction": "out",
+      "commandText": "dbo.tlog_Siram",
+      "connectionStringSetting": "SqlConnectionString"
+    },
+    {
+      "name": "SelectIdData",
+      "type": "sql",
+      "direction": "in",
+      "commandText": "select TOP (1) [id_Data] from dbo.tdata ORDER BY [id_Data] DESC",
+      "commandType": "Text",
+      "connectionStringSetting": "SqlConnectionString"
+    }
+  ]
+}
