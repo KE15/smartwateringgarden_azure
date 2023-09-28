@@ -20,11 +20,12 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
     totalKelembaban = body["Total Kelembapan"]
     kelembaban1 = body["Nilai Kelembapan 1"]
     kelembaban2 = body["Nilai Kelembapan 2"]
+    status_keterangan = body["Status Keterangan"]
     status_relay = body["Status Relay"]
     nilai_cahaya = body["Nilai Cahaya"]
     datetime = body["DateTime"]
     
-    rowdata = func.SqlRow(GardenInsert(totalKelembaban, kelembaban1, kelembaban2,status_relay,nilai_cahaya, datetime, device_id))
+    rowdata = func.SqlRow(GardenInsert(totalKelembaban, kelembaban1, kelembaban2, status_keterangan, status_relay, nilai_cahaya, datetime, device_id))
     insert.set(rowdata)
     logging.info('Data is saved')
 
@@ -40,7 +41,8 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
         linkURL = 'https://api.telegram.org/bot6318000053:AAHq9JdNN2s190po_6zHPuveM87K23ZIzkI/sendMessage?'
         data = {
             "chat_id" : '1350618150',
-            "text" : 'Aktuator {sr}, Total Kelembapan : {tk}, Sensor 1 : {k1}, Sensor 2 : {k2}, Intensitas Cahaya : {nc}, Tanggal dan Waktu : {dt}'.format(sr = status_relay, tk = totalKelembaban, k1 = kelembaban1, k2 = kelembaban2, nc = nilai_cahaya, dt = datetime)
+            "text" : 'Aktuator {sr}, Total Kelembapan : {tk}, Status Ketarangan : {sk}, Sensor 1 : {k1}, Sensor 2 : {k2}, Intensitas Cahaya : {nc}, Tanggal dan Waktu : {dt}'.format(
+                sr = status_relay, tk = totalKelembaban, sk = status_keterangan, k1 = kelembaban1, k2 = kelembaban2, nc = nilai_cahaya, dt = datetime)
         }
         tele = requests.get(linkURL, params=data)
 
