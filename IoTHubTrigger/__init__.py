@@ -18,19 +18,22 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
     
     # idTime = time.time_ns()
     totalKelembaban = body["Total Kelembapan"]
+    adcTotal = body["ADC Total"]
     kelembaban1 = body["Nilai Kelembapan 1"]
+    adcKelembaban1 = body["ADC Kelembapan 1"]
     kelembaban2 = body["Nilai Kelembapan 2"]
+    adcKelembaban2 = body["ADC Kelembapan 2"]
     status_keterangan = body["Status Keterangan"]
     status_relay = body["Status Relay"]
     nilai_cahaya = body["Nilai Cahaya"]
     datetime = body["DateTime"]
     
-    rowdata = func.SqlRow(GardenInsert(totalKelembaban, kelembaban1, kelembaban2, status_keterangan, status_relay, nilai_cahaya, datetime, device_id))
+    rowdata = func.SqlRow(GardenInsert(totalKelembaban, adcTotal, kelembaban1, adcKelembaban1, kelembaban2, adcKelembaban2, status_keterangan, status_relay, nilai_cahaya, datetime, device_id))
     insert.set(rowdata)
     logging.info('Data is saved')
 
 
-    if totalKelembaban >= 0 and totalKelembaban < 300:
+    if adcTotal >= 0 and adcTotal < 300:
         direct_method = CloudToDeviceMethod(method_name='actuator_on', payload='{}')
         logging.info('Insert Data Actuator')
         rowdata = list(map(lambda r: json.loads(r.to_json()), SelectIdData))
@@ -47,9 +50,9 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
         tele = requests.get(linkURL, params=data)
 
     
-    elif totalKelembaban >= 300 and totalKelembaban < 700:
+    elif adcTotal >= 300 and adcTotal < 700:
         direct_method = CloudToDeviceMethod(method_name='actuator_off', payload='{}')
-    elif totalKelembaban > 700:
+    elif adcTotal > 700:
         direct_method = CloudToDeviceMethod(method_name='actuator_off', payload='{}')
     
     logging.info(f'Sending direct method request for {direct_method.method_name} for device {device_id}')

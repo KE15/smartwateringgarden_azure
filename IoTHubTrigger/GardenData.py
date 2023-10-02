@@ -6,12 +6,15 @@ import time
 from datetime import datetime
 
 class GardenInsert(collections.UserDict):
-    def __init__(self, Total_Kelembaban, Nilai_Kelembaban1, Nilai_Kelembaban2, Status_Keterangan, Status_Relay, Nilai_Cahaya, TanggalWaktu, device_id):
+    def __init__(self, Total_Kelembaban, Adc_Total, Nilai_Kelembaban1, Adc_Kelembaban1, Nilai_Kelembaban2, Adc_Kelembaban2, Status_Keterangan, Status_Relay, Nilai_Cahaya, TanggalWaktu, device_id):
         super().__init__()
         # self(isi tabel db)
         self['TotalValue'] = Total_Kelembaban
+        self['AdcTotal'] = Adc_Total
         self['ValueKelembapan1'] = Nilai_Kelembaban1
+        self['AdcKelembapan1'] = Adc_Kelembaban1
         self['ValueKelembapan2'] = Nilai_Kelembaban2
+        self['AdcKelembapan2'] = Adc_Kelembaban2
         self['StatusKeterangan'] = Status_Keterangan
         self['StatusRelay'] = Status_Relay
         self['ValueCahaya'] = Nilai_Cahaya
