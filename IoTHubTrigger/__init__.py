@@ -30,10 +30,10 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
     
     rowdata = func.SqlRow(GardenInsert(totalKelembaban, adcTotal, kelembaban1, adcKelembaban1, kelembaban2, adcKelembaban2, status_keterangan, status_relay, nilai_cahaya, datetime, device_id))
     insert.set(rowdata)
+    time.sleep(5)
     logging.info('Data is saved')
 
-
-    if adcTotal >= 0 and adcTotal < 300:
+    if status_relay == "ON":
         direct_method = CloudToDeviceMethod(method_name='actuator_on', payload='{}')
         logging.info('Insert Data Actuator')
         rowdata = list(map(lambda r: json.loads(r.to_json()), SelectIdData))
@@ -44,15 +44,12 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
         linkURL = 'https://api.telegram.org/bot6318000053:AAHq9JdNN2s190po_6zHPuveM87K23ZIzkI/sendMessage?'
         data = {
             "chat_id" : '1350618150',
-            "text" : 'Aktuator {sr}, Total Kelembapan : {tk}, Status Ketarangan : {sk}, Sensor 1 : {k1}, Sensor 2 : {k2}, Intensitas Cahaya : {nc}, Tanggal dan Waktu : {dt}'.format(
-                sr = status_relay, tk = totalKelembaban, sk = status_keterangan, k1 = kelembaban1, k2 = kelembaban2, nc = nilai_cahaya, dt = datetime)
+            "text" : 'Aktuator {sr} \nTotal Kelembapan : {tk}%({at}), \nStatus Ketarangan : {sk}, \nSensor 1 : {k1}%({ak1}), \nSensor 2 : {k2}%({ak2}), \nIntensitas Cahaya : {nc}lx, \nTanggal dan Waktu : {dt}'.format(
+                sr = status_relay, tk = totalKelembaban, at = adcTotal, sk = status_keterangan, k1 = kelembaban1, ak1 = adcKelembaban1, k2 = kelembaban2, ak2 = adcKelembaban2, nc = nilai_cahaya, dt = datetime)
         }
         tele = requests.get(linkURL, params=data)
 
-    
-    elif adcTotal >= 300 and adcTotal < 700:
-        direct_method = CloudToDeviceMethod(method_name='actuator_off', payload='{}')
-    elif adcTotal > 700:
+    elif status_relay == "OFF":
         direct_method = CloudToDeviceMethod(method_name='actuator_off', payload='{}')
     
     logging.info(f'Sending direct method request for {direct_method.method_name} for device {device_id}')
