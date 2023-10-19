@@ -10,7 +10,7 @@ import time
 import requests
 import pyodbc
 
-def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSiram: func.Out[func.SqlRow], SelectIdData: func.SqlRowList):
+def main(event: func.EventHubEvent):
     body = json.loads(event.get_body().decode('utf-8'))
     device_id = event.iothub_metadata['connection-device-id']
 
@@ -63,6 +63,8 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
                     sr = status_relay, tk = totalKelembaban, at = adcTotal, sk = status_keterangan, k1 = kelembaban1, ak1 = adcKelembaban1, k2 = kelembaban2, ak2 = adcKelembaban2, nc = nilai_cahaya, dt = datetime)
             }
             tele = requests.get(linkURL, params=data)
+            logging.info(f'Sending message via Telegram for device {device_id}')
+            logging.info(f'{data}')
 
         elif status_relay == "OFF":
             direct_method = CloudToDeviceMethod(method_name='actuator_off', payload='{}')
