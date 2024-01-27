@@ -55,7 +55,9 @@ def main(event: func.EventHubEvent, insert: func.Out[func.SqlRow], insertLogSira
     logging.info(f'Sending direct method request for {direct_method.method_name} for device {device_id}')
 
     registry_manager_connection_string = os.environ['REGISTRY_MANAGER_CONNECTION_STRING']
+    logging.info(f'test {registry_manager_connection_string}')
     registry_manager = IoTHubRegistryManager(registry_manager_connection_string)
+    logging.info(f'test2 {registry_manager}')
     registry_manager.invoke_device_method(device_id, direct_method)
 
     logging.info('Direct method request sent!')
